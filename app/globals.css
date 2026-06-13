@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0907;
+  --bg-soft: #14110d;
+  --bg-card: #16130e;
+  --line: #2a2723;
+  --line-soft: #1d1a16;
+  --fg: #f5f1ea;
+  --fg-dim: #c9c2b5;
+  --fg-mute: #8a8278;
+  --orange: #fa4616;
+  --orange-soft: #b83a1b;
+  --cyan: #69e0ff;
+  --cyan-soft: #3a9eba;
+  --rust: #3d1607;
+  --moss: #1f2a1e;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  overflow-x: hidden;
+}
+
+/* Display font tuning — Fraunces with optical sizing at headline scale */
+.font-display {
+  font-feature-settings: "ss01", "ss03", "ss04";
+  font-variation-settings: "opsz" 144, "SOFT" 30, "WONK" 0;
+}
+.font-display.italic {
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+}
+.font-display-sm {
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 36, "SOFT" 30, "WONK" 0;
+}
+
+/* Film grain overlay */
+.noise {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.9  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Subtle grid background used in select sections */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(245, 241, 234, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 241, 234, 0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Scanline overlay */
+.scanlines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgba(105, 224, 255, 0.025) 3px,
+    rgba(105, 224, 255, 0.025) 4px
+  );
+}
+
+/* Glow utility */
+.glow-orange {
+  text-shadow: 0 0 30px rgba(250, 70, 22, 0.25);
+}
+.glow-cyan {
+  text-shadow: 0 0 30px rgba(105, 224, 255, 0.4);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-mute); }
+
+/* Hairline rule */
+.hairline {
+  border-color: var(--line);
+}
+
+/* Form input baseline */
+.field {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+  width: 100%;
+  font-family: var(--font-sans);
+  color: var(--fg);
+  font-size: 1.05rem;
+  transition: border-color 250ms ease, color 250ms ease;
+}
+.field:focus {
+  outline: none;
+  border-bottom-color: var(--orange);
+}
+.field::placeholder {
+  color: var(--fg-mute);
+}
+
+/* Button hover wash */
+.cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--orange) 0%, var(--cyan) 100%);
+  transform: translateY(101%);
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: -1;
+}
+.cta:hover::before {
+  transform: translateY(0);
+}
+
+/* Caret blinker for "live" indicators */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.live-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+/* Marquee track for ridge labels */
+@keyframes drift-x {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.drift {
+  animation: drift-x 80s linear infinite;
+}
+
+/* Long horizontal divider with terminal accents */
+.divider-cross {
+  position: relative;
+  height: 1px;
+  background: var(--line);
+}
+.divider-cross::before,
+.divider-cross::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  transform: translateY(-50%) rotate(45deg);
+}
+.divider-cross::before { left: -4px; }
+.divider-cross::after  { right: -4px; }
+
+/* Smooth max-height accordion */
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 380ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.accordion-content.open {
+  grid-template-rows: 1fr;
+}
+.accordion-content > div {
+  overflow: hidden;
+}
