@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
 const repoBasePath = "/hipergator";
 
 const config: NextConfig = {
@@ -8,9 +8,11 @@ const config: NextConfig = {
   transpilePackages: ["three"],
   output: "export",
   images: { unoptimized: true },
-  // Served from https://<user>.github.io/hipergator/ on GitHub Pages.
-  basePath: isProd ? repoBasePath : undefined,
-  assetPrefix: isProd ? repoBasePath : undefined,
+  // GitHub Pages needs the repository prefix. Vercel and local builds are
+  // served from the domain root, so applying this to every production build
+  // makes their CSS, fonts, and scripts resolve to 404s.
+  basePath: isGitHubPages ? repoBasePath : undefined,
+  assetPrefix: isGitHubPages ? repoBasePath : undefined,
   trailingSlash: true,
 };
 
